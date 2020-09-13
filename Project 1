@@ -1,0 +1,51 @@
+# Project 1 (Exploratory Data Analysis): This assignment uses data from the UC Irvine Machine Learning Repository. 
+# I will be using the “Individual household electric power consumption Data Set” to simply to examine how household energy usage varies over a 2-day period in February, 2007. 
+# My task is to reconstruct the given plots (by basic plot functions).
+
+# Let "a" be the power consumption dataset:
+a <- read.table("household_power_consumption.txt",skip=1,sep=";")
+names(a)
+# Change the names of variables in dataset
+names(a) <- c("Date","Time","Global_active_power","Global_reactive_power","Voltage","Global_intensity","Sub_metering_1","Sub_metering_2","Sub_metering_3")
+
+# Let "b" be the superwoer consumption over a 2-day period in February, 2007
+b <- subset(a,a$Date=="1/2/2007" | a$Date =="2/2/2007")
+
+# Plot 1:  Call the basic plot function (hist) :
+hist(as.numeric(as.character(subpower_con$Global_active_power)),col="red",main="Global Active Power",xlab="Global Active Power(kilowatts)")
+
+# Change Date and Time variables from characters to objects of type Date and POSIXlt alike:
+
+b$Date <- as.Date(b$Date, format="%d/%m/%Y")
+b$Time <- strptime(b$Time, format="%H:%M:%S")
+b[1:1440,"Time"] <- format(b[1:1440,"Time"],"2007-02-01 %H:%M:%S")
+b[1441:2880,"Time"] <- format(b[1441:2880,"Time"],"2007-02-02 %H:%M:%S")
+
+# Plot 2: Call the basic plot function (plot) and add title to it:
+
+plot(b$Time,as.numeric(as.character(b$Global_active_power)),type="l",xlab="",ylab="Global Active Power (kilowatts)") 
+title(main="Global Active Power Vs Time")
+
+# Plot 3: Call the basic plot function (plot) and add title to it:
+
+plot(b$Time,b$Sub_metering_1,type="n",xlab="",ylab="Energy sub metering")
+with(b,lines(Time,as.numeric(as.character(Sub_metering_1))))
+with(b,lines(Time,as.numeric(as.character(Sub_metering_2)),col="red"))
+with(b,lines(Time,as.numeric(as.character(Sub_metering_3)),col="blue"))
+legend("topright", lty=1, col=c("black","red","blue"),legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+title(main="Energy sub-metering")
+
+# Plot 4: # Composite plot with many graphs using mfrow and call basic plot functiona (plot) to plot 4 graphs:
+
+par(mfrow=c(2,2))
+with(b,{
+plot(b$Time,as.numeric(as.character(b$Global_active_power)),type="l",  xlab="",ylab="Global Active Power")  
+plot(b$Time,as.numeric(as.character(b$Voltage)), type="l",xlab="datetime",ylab="Voltage")
+plot(b$Time,b$Sub_metering_1,type="n",xlab="",ylab="Energy sub metering")
+with(b,lines(Time,as.numeric(as.character(Sub_metering_1))))
+with(b,lines(Time,as.numeric(as.character(Sub_metering_2)),col="red"))
+with(b,lines(Time,as.numeric(as.character(Sub_metering_3)),col="blue"))
+legend("topright", lty=1, col=c("black","red","blue"),legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"), cex = 0.6)
+plot(b$Time,as.numeric(as.character(b$Global_reactive_power)),type="l",xlab="datetime",ylab="Global_reactive_power")
+})
+
